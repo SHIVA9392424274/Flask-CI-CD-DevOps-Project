@@ -1,0 +1,9 @@
+venv/
+.git/
+__pycache__/
+*.pyc
+tests/
+Jenkinsfile
+monitoring/
+reports/
+.pytest_cache/

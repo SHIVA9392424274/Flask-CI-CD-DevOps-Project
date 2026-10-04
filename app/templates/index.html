@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}Home | Flask CI/CD App{% endblock %}
+{% block content %}
+  <h1>{{ message }}</h1>
+  <p class="version">version {{ version }}</p>
+  <p class="lead">Every push to GitHub runs through the pipeline below. If this page loads, the latest build passed all of it.</p>
+  <ol class="pipeline">
+    <li><span class="dot"></span>Checkout from GitHub</li>
+    <li><span class="dot"></span>Install dependencies</li>
+    <li><span class="dot"></span>Run automated tests</li>
+    <li><span class="dot"></span>Build Docker image</li>
+    <li><span class="dot"></span>Deploy container</li>
+    <li><span class="dot"></span>Verify health</li>
+  </ol>
+{% endblock %}
