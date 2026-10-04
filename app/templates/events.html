@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>College Event Management System</title>
+    <title>Events | College Event Management</title>
 
     <link rel="stylesheet"
           href="{{ url_for('static', filename='style.css') }}">
@@ -22,24 +21,6 @@
     </nav>
 </header>
 
-<section class="hero">
-
-    <div class="hero-content">
-
-        <h2>Discover. Register. Participate.</h2>
-
-        <p>
-            Find upcoming college events and register easily.
-        </p>
-
-        <a class="button" href="/events">
-            Explore Events
-        </a>
-
-    </div>
-
-</section>
-
 <main>
 
     <h2>Upcoming Events</h2>
@@ -53,18 +34,20 @@
             <h3>{{ event.name }}</h3>
 
             <p>
-                <strong>Date:</strong> {{ event.date }}
+                <strong>Date:</strong>
+                {{ event.date }}
             </p>
 
             <p>
-                <strong>Venue:</strong> {{ event.venue }}
+                <strong>Venue:</strong>
+                {{ event.venue }}
             </p>
 
             <p>{{ event.description }}</p>
 
             <a class="button"
                href="{{ url_for('register', event_id=event.id) }}">
-                Register
+                Register Now
             </a>
 
         </div>

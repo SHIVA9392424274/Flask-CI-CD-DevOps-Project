@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register | College Event Management</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+<header>
+    <h1>College Event Management System</h1>
+
+    <nav>
+        <a href="/">Home</a>
+        <a href="/events">Events</a>
+        <a href="/admin">Admin</a>
+    </nav>
+</header>
+
+<main>
+
+    <div class="form-container">
+
+        <h2>Event Registration</h2>
+
+        <h3>{{ event.name }}</h3>
+
+        <p>
+            <strong>Date:</strong> {{ event.date }}
+        </p>
+
+        <p>
+            <strong>Venue:</strong> {{ event.venue }}
+        </p>
+
+        <form method="POST">
+
+            <label>Student Name</label>
+            <input type="text"
+                   name="name"
+                   placeholder="Enter your name"
+                   required>
+
+            <label>Email</label>
+            <input type="email"
+                   name="email"
+                   placeholder="Enter your email"
+                   required>
+
+            <label>Department</label>
+            <input type="text"
+                   name="department"
+                   placeholder="Example: CSE"
+                   required>
+
+            <button type="submit">
+                Register for Event
+            </button>
+
+        </form>
+
+    </div>
+
+</main>
+
+<footer>
+    <p>College Event Management System</p>
+</footer>
+
+</body>
+</html>

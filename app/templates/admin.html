@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Admin | College Event Management</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+<header>
+    <h1>College Event Management System</h1>
+
+    <nav>
+        <a href="/">Home</a>
+        <a href="/events">Events</a>
+        <a href="/admin">Admin</a>
+    </nav>
+</header>
+
+<main>
+
+    <h2>Admin Dashboard</h2>
+
+    <h3>Student Registrations</h3>
+
+    {% if registrations %}
+
+    <table>
+
+        <thead>
+            <tr>
+                <th>Student Name</th>
+                <th>Email</th>
+                <th>Department</th>
+                <th>Event</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+            {% for registration in registrations %}
+
+            <tr>
+                <td>{{ registration.name }}</td>
+                <td>{{ registration.email }}</td>
+                <td>{{ registration.department }}</td>
+                <td>{{ registration.event }}</td>
+            </tr>
+
+            {% endfor %}
+
+        </tbody>
+
+    </table>
+
+    {% else %}
+
+    <div class="empty-message">
+        <p>No student registrations yet.</p>
+    </div>
+
+    {% endif %}
+
+</main>
+
+<footer>
+    <p>College Event Management System</p>
+</footer>
+
+</body>
+</html>

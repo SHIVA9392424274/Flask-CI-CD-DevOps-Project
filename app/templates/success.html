@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Registration Successful</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+<header>
+    <h1>College Event Management System</h1>
+
+    <nav>
+        <a href="/">Home</a>
+        <a href="/events">Events</a>
+        <a href="/admin">Admin</a>
+    </nav>
+</header>
+
+<main>
+
+    <div class="success-container">
+
+        <h2>Registration Successful!</h2>
+
+        <p>
+            You have successfully registered for the event.
+        </p>
+
+        <p>
+            Thank you for registering.
+        </p>
+
+        <a class="button" href="/events">
+            View More Events
+        </a>
+
+        <a class="button" href="/">
+            Go to Home
+        </a>
+
+    </div>
+
+</main>
+
+<footer>
+    <p>College Event Management System</p>
+</footer>
+
+</body>
+</html>

@@ -1,80 +1,97 @@
-"""Flask web application used by the CI/CD pipeline."""
-import os
-import platform
-import time
-from datetime import datetime, timezone
-
-from flask import Flask, jsonify, render_template, Response
+from flask import Flask, render_template, request, redirect, url_for
 
 app = Flask(__name__)
 
-APP_VERSION = os.getenv("APP_VERSION", "1.0.0")
-START_TIME = time.time()
-REQUEST_COUNT = {"total": 0}
+events = [
+    {
+        "id": 1,
+        "name": "Tech Fest 2026",
+        "date": "October 15, 2026",
+        "venue": "College Auditorium",
+        "description": "Technical competitions, coding contests and workshops."
+    },
+    {
+        "id": 2,
+        "name": "Cultural Fest 2026",
+        "date": "October 20, 2026",
+        "venue": "Main Ground",
+        "description": "Music, dance, cultural programs and entertainment."
+    },
+    {
+        "id": 3,
+        "name": "Sports Meet 2026",
+        "date": "October 25, 2026",
+        "venue": "College Sports Ground",
+        "description": "Inter-college sports competitions and activities."
+    }
+]
 
-
-@app.before_request
-def count_requests():
-    REQUEST_COUNT["total"] += 1
-
-
-def uptime_seconds() -> int:
-    return int(time.time() - START_TIME)
+registrations = []
 
 
 @app.route("/")
 def home():
-    return render_template(
-        "index.html",
-        message="Welcome to the Automated CI/CD Pipeline demo",
-        version=APP_VERSION,
-    )
+    return render_template("index.html", events=events)
+
+
+@app.route("/events")
+def event_list():
+    return render_template("events.html", events=events)
+
+
+@app.route("/register/<int:event_id>", methods=["GET", "POST"])
+def register(event_id):
+
+    event = next((e for e in events if e["id"] == event_id), None)
+
+    if event is None:
+        return "Event not found", 404
+
+    if request.method == "POST":
+
+        name = request.form["name"]
+        email = request.form["email"]
+        department = request.form["department"]
+
+        registrations.append({
+            "name": name,
+            "email": email,
+            "department": department,
+            "event": event["name"]
+        })
+
+        return redirect(url_for("success"))
+
+    return render_template("register.html", event=event)
+
+
+@app.route("/success")
+def success():
+    return render_template("success.html")
+
+
+@app.route("/admin")
+def admin():
+    return render_template("admin.html", registrations=registrations)
 
 
 @app.route("/status")
 def status():
-    return render_template(
-        "status.html",
-        version=APP_VERSION,
-        uptime=uptime_seconds(),
-        host=platform.node(),
-        python_version=platform.python_version(),
-        now=datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S UTC"),
-    )
+    return {
+        "status": "healthy",
+        "application": "College Event Management System",
+        "version": "1.0.0"
+    }
 
 
 @app.route("/api/info")
 def api_info():
-    return jsonify(
-        name="flask-cicd-app",
-        message="Welcome to the Automated CI/CD Pipeline demo",
-        version=APP_VERSION,
-        uptime_seconds=uptime_seconds(),
-    )
-
-
-@app.route("/health")
-def health():
-    """Used by Docker HEALTHCHECK and Jenkins deployment verification."""
-    return jsonify(status="ok", version=APP_VERSION), 200
-
-
-@app.route("/metrics")
-def metrics():
-    """Prometheus-format metrics (optional monitoring module)."""
-    body = (
-        "# HELP app_requests_total Total HTTP requests handled.\n"
-        "# TYPE app_requests_total counter\n"
-        f"app_requests_total {REQUEST_COUNT['total']}\n"
-        "# HELP app_uptime_seconds Seconds since the app started.\n"
-        "# TYPE app_uptime_seconds gauge\n"
-        f"app_uptime_seconds {uptime_seconds()}\n"
-        "# HELP app_up Whether the application is up.\n"
-        "# TYPE app_up gauge\n"
-        "app_up 1\n"
-    )
-    return Response(body, mimetype="text/plain")
+    return {
+        "application": "College Event Management System",
+        "events": len(events),
+        "registrations": len(registrations)
+    }
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=int(os.getenv("PORT", "5000")))
+    app.run(host="0.0.0.0", port=5000)
