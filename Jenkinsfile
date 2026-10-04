@@ -13,7 +13,9 @@ def venvPython() { return isUnix() ? 'venv/bin/python' : 'venv\\Scripts\\python'
 
 pipeline {
     agent any
-
+    environment {
+        PATH = "C:\\Users\\shiva\\AppData\\Local\\Programs\\Python\\Python312;C:\\Users\\shiva\\AppData\\Local\\Programs\\DockerDesktop\\resources\\bin;${env.PATH}"
+    }
     options {
         timestamps()
         buildDiscarder(logRotator(numToKeepStr: '20'))
