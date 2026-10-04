@@ -1,56 +1,77 @@
-import os
-import sys
-
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "app"))
-
 import pytest
-from app import app
+
+from app.app import app
 
 
 @pytest.fixture
 def client():
     app.config["TESTING"] = True
-    with app.test_client() as c:
-        yield c
+
+    with app.test_client() as client:
+        yield client
 
 
 def test_home_page(client):
-    r = client.get("/")
-    assert r.status_code == 200
-    assert b"Welcome" in r.data
+    response = client.get("/")
+
+    assert response.status_code == 200
+    assert b"College Event Management System" in response.data
 
 
-def test_home_shows_version(client):
-    r = client.get("/")
-    assert b"version" in r.data
+def test_events_page(client):
+    response = client.get("/events")
+
+    assert response.status_code == 200
+    assert b"Upcoming Events" in response.data
 
 
-def test_status_page(client):
-    r = client.get("/status")
-    assert r.status_code == 200
-    assert b"Running" in r.data
+def test_register_page(client):
+    response = client.get("/register/1")
+
+    assert response.status_code == 200
+    assert b"Event Registration" in response.data
+
+
+def test_registration(client):
+    response = client.post(
+        "/register/1",
+        data={
+            "name": "Test Student",
+            "email": "test@example.com",
+            "department": "CSE"
+        },
+        follow_redirects=True
+    )
+
+    assert response.status_code == 200
+    assert b"Registration Successful" in response.data
+
+
+def test_admin_page(client):
+    response = client.get("/admin")
+
+    assert response.status_code == 200
+    assert b"Admin Dashboard" in response.data
+
+
+def test_status(client):
+    response = client.get("/status")
+
+    assert response.status_code == 200
+
+    data = response.get_json()
+
+    assert data["status"] == "healthy"
+    assert data["application"] == "College Event Management System"
 
 
 def test_api_info(client):
-    r = client.get("/api/info")
-    assert r.status_code == 200
-    data = r.get_json()
-    assert data["name"] == "flask-cicd-app"
-    assert "version" in data
-    assert "message" in data
+    response = client.get("/api/info")
 
+    assert response.status_code == 200
 
-def test_health(client):
-    r = client.get("/health")
-    assert r.status_code == 200
-    assert r.get_json()["status"] == "ok"
+    data = response.get_json()
 
-
-def test_metrics(client):
-    r = client.get("/metrics")
-    assert r.status_code == 200
-    assert b"app_up 1" in r.data
-
-
-def test_unknown_route_404(client):
-    assert client.get("/does-not-exist").status_code == 404
+    assert data["application"] == "College Event Management System"
+    assert "events" in data
+    assert "registrations" in data
