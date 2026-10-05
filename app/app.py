@@ -4,7 +4,14 @@ import os
 
 app = Flask(__name__)
 
-DATABASE = "registrations.db"
+# ---------------- DATABASE ----------------
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+DATABASE_DIR = os.path.join(BASE_DIR, "data")
+DATABASE = os.path.join(DATABASE_DIR, "registrations.db")
+
+# Make sure the database directory exists
+os.makedirs(DATABASE_DIR, exist_ok=True)
 
 events = [
     {
@@ -31,8 +38,6 @@ events = [
 ]
 
 
-# ---------------- DATABASE ----------------
-
 def get_db_connection():
     connection = sqlite3.connect(DATABASE)
     connection.row_factory = sqlite3.Row
@@ -56,7 +61,6 @@ def init_db():
     connection.close()
 
 
-# Initialize database when application starts
 init_db()
 
 
