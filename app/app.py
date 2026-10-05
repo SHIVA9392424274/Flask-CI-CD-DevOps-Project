@@ -1,6 +1,10 @@
 from flask import Flask, render_template, request, redirect, url_for
+import sqlite3
+import os
 
 app = Flask(__name__)
+
+DATABASE = "registrations.db"
 
 events = [
     {
@@ -26,18 +30,51 @@ events = [
     }
 ]
 
-registrations = []
 
+# ---------------- DATABASE ----------------
+
+def get_db_connection():
+    connection = sqlite3.connect(DATABASE)
+    connection.row_factory = sqlite3.Row
+    return connection
+
+
+def init_db():
+    connection = get_db_connection()
+
+    connection.execute("""
+        CREATE TABLE IF NOT EXISTS registrations (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT NOT NULL,
+            email TEXT NOT NULL,
+            department TEXT NOT NULL,
+            event TEXT NOT NULL
+        )
+    """)
+
+    connection.commit()
+    connection.close()
+
+
+# Initialize database when application starts
+init_db()
+
+
+# ---------------- HOME ----------------
 
 @app.route("/")
 def home():
     return render_template("index.html", events=events)
 
 
+# ---------------- EVENTS ----------------
+
 @app.route("/events")
 def event_list():
     return render_template("events.html", events=events)
 
+
+# ---------------- REGISTRATION ----------------
 
 @app.route("/register/<int:event_id>", methods=["GET", "POST"])
 def register(event_id):
@@ -53,27 +90,56 @@ def register(event_id):
         email = request.form["email"]
         department = request.form["department"]
 
-        registrations.append({
-            "name": name,
-            "email": email,
-            "department": department,
-            "event": event["name"]
-        })
+        connection = get_db_connection()
+
+        connection.execute("""
+            INSERT INTO registrations
+            (name, email, department, event)
+            VALUES (?, ?, ?, ?)
+        """, (
+            name,
+            email,
+            department,
+            event["name"]
+        ))
+
+        connection.commit()
+        connection.close()
 
         return redirect(url_for("success"))
 
     return render_template("register.html", event=event)
 
 
+# ---------------- SUCCESS ----------------
+
 @app.route("/success")
 def success():
     return render_template("success.html")
 
 
+# ---------------- ADMIN ----------------
+
 @app.route("/admin")
 def admin():
-    return render_template("admin.html", registrations=registrations)
 
+    connection = get_db_connection()
+
+    registrations = connection.execute("""
+        SELECT id, name, email, department, event
+        FROM registrations
+        ORDER BY id DESC
+    """).fetchall()
+
+    connection.close()
+
+    return render_template(
+        "admin.html",
+        registrations=registrations
+    )
+
+
+# ---------------- STATUS ----------------
 
 @app.route("/status")
 def status():
@@ -84,16 +150,34 @@ def status():
     }
 
 
+# ---------------- API INFO ----------------
+
 @app.route("/api/info")
 def api_info():
+
+    connection = get_db_connection()
+
+    registration_count = connection.execute(
+        "SELECT COUNT(*) FROM registrations"
+    ).fetchone()[0]
+
+    connection.close()
+
     return {
         "application": "College Event Management System",
         "events": len(events),
-        "registrations": len(registrations)
+        "registrations": registration_count
     }
+
+
+# ---------------- HEALTH CHECK ----------------
+
 @app.route("/health")
 def health():
     return {"status": "healthy"}, 200
+
+
+# ---------------- RUN ----------------
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)

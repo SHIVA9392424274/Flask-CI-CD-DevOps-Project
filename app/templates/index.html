@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>College Event Management System</title>
+    <title>College Events 2026</title>
 
     <link rel="stylesheet"
           href="{{ url_for('static', filename='style.css') }}">
@@ -12,60 +13,119 @@
 
 <body>
 
-<header>
-    <h1>College Event Management System</h1>
+<nav class="navbar">
 
-    <nav>
-        <a href="/">Home</a>
-        <a href="/events">Events</a>
-        <a href="/admin">Admin</a>
-    </nav>
-</header>
+    <div class="nav-container">
+
+        <a href="/" class="logo">
+            🎓 College<span>Events</span>
+        </a>
+
+        <ul class="nav-links">
+            <li><a href="/">Home</a></li>
+            <li><a href="/events">Events</a></li>
+            <li><a href="/admin">Admin</a></li>
+        </ul>
+
+    </div>
+
+</nav>
+
 
 <section class="hero">
 
     <div class="hero-content">
 
-        <h2>Discover. Register. Participate.</h2>
+        <div class="hero-badge">
+            🎉 College Events 2026
+        </div>
+
+        <h1>
+            Discover. Participate.
+            <span>Celebrate.</span>
+        </h1>
 
         <p>
-            Find upcoming college events and register easily.
+            Explore exciting college events, register online,
+            and be part of unforgettable experiences.
         </p>
 
-        <a class="button" href="/events">
-            Explore Events
+        <a href="/events" class="btn btn-white">
+            Explore Events →
         </a>
 
     </div>
 
 </section>
 
-<main>
 
-    <h2>Upcoming Events</h2>
+<section class="section">
 
-    <div class="events-container">
+    <div class="section-heading">
+
+        <h2>Upcoming Events</h2>
+
+        <p>
+            Discover what's happening on campus
+        </p>
+
+    </div>
+
+
+    <div class="event-grid">
 
         {% for event in events %}
 
         <div class="event-card">
 
-            <h3>{{ event.name }}</h3>
+            {% if event.id == 1 %}
 
-            <p>
-                <strong>Date:</strong> {{ event.date }}
-            </p>
+            <img
+                src="{{ url_for('static', filename='images/tech-fest.jpg') }}"
+                alt="Tech Fest"
+                class="event-image">
 
-            <p>
-                <strong>Venue:</strong> {{ event.venue }}
-            </p>
+            {% elif event.id == 2 %}
 
-            <p>{{ event.description }}</p>
+            <img
+                src="{{ url_for('static', filename='images/cultural-fest.jpg') }}"
+                alt="Cultural Fest"
+                class="event-image">
 
-            <a class="button"
-               href="{{ url_for('register', event_id=event.id) }}">
-                Register
-            </a>
+            {% else %}
+
+            <img
+                src="{{ url_for('static', filename='images/sports-meet.jpg') }}"
+                alt="Sports Meet"
+                class="event-image">
+
+            {% endif %}
+
+
+            <div class="event-content">
+
+                <h3>{{ event.name }}</h3>
+
+                <div class="event-info">
+
+                    <p>📅 {{ event.date }}</p>
+
+                    <p>📍 {{ event.venue }}</p>
+
+                </div>
+
+                <p class="event-description">
+                    {{ event.description }}
+                </p>
+
+                <a href="/register/{{ event.id }}"
+                   class="btn btn-primary">
+
+                    Register Now
+
+                </a>
+
+            </div>
 
         </div>
 
@@ -73,11 +133,56 @@
 
     </div>
 
-</main>
+</section>
+
+
+<section class="stats">
+
+    <div class="section">
+
+        <div class="stats-grid">
+
+            <div class="stat-card">
+
+                <h3>{{ events|length }}</h3>
+
+                <p>Upcoming Events</p>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <h3>2026</h3>
+
+                <p>Event Year</p>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <h3>100%</h3>
+
+                <p>Online Registration</p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
 
 <footer>
-    <p>College Event Management System</p>
+
+    <p>
+        © 2026 College Event Management System
+    </p>
+
 </footer>
 
 </body>
+
 </html>

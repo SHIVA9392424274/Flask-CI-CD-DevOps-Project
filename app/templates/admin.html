@@ -1,76 +1,201 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Admin | College Event Management</title>
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Admin Dashboard</title>
 
     <link rel="stylesheet"
           href="{{ url_for('static', filename='style.css') }}">
+
 </head>
 
 <body>
 
-<header>
-    <h1>College Event Management System</h1>
+<nav class="navbar">
 
-    <nav>
-        <a href="/">Home</a>
-        <a href="/events">Events</a>
-        <a href="/admin">Admin</a>
-    </nav>
-</header>
+    <div class="nav-container">
 
-<main>
+        <a href="/" class="logo">
+            🎓 College<span>Events</span>
+        </a>
 
-    <h2>Admin Dashboard</h2>
+        <ul class="nav-links">
 
-    <h3>Student Registrations</h3>
+            <li>
+                <a href="/">Home</a>
+            </li>
 
-    {% if registrations %}
+            <li>
+                <a href="/events">Events</a>
+            </li>
 
-    <table>
+            <li>
+                <a href="/admin">Admin</a>
+            </li>
 
-        <thead>
-            <tr>
-                <th>Student Name</th>
-                <th>Email</th>
-                <th>Department</th>
-                <th>Event</th>
-            </tr>
-        </thead>
+        </ul>
 
-        <tbody>
-
-            {% for registration in registrations %}
-
-            <tr>
-                <td>{{ registration.name }}</td>
-                <td>{{ registration.email }}</td>
-                <td>{{ registration.department }}</td>
-                <td>{{ registration.event }}</td>
-            </tr>
-
-            {% endfor %}
-
-        </tbody>
-
-    </table>
-
-    {% else %}
-
-    <div class="empty-message">
-        <p>No student registrations yet.</p>
     </div>
 
-    {% endif %}
+</nav>
 
-</main>
+
+<section class="page-header">
+
+    <h1>Admin Dashboard</h1>
+
+    <p>
+        Manage college event registrations
+    </p>
+
+</section>
+
+
+<div class="admin-container">
+
+
+    <div class="admin-summary">
+
+        <div class="admin-stat">
+
+            <h3>
+                {{ registrations|length }}
+            </h3>
+
+            <p>
+                Total Registrations
+            </p>
+
+        </div>
+
+
+        <div class="admin-stat">
+
+            <h3>
+                3
+            </h3>
+
+            <p>
+                Total Events
+            </p>
+
+        </div>
+
+
+        <div class="admin-stat">
+
+            <h3>
+                2026
+            </h3>
+
+            <p>
+                Event Year
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <div class="table-card">
+
+        <h2>
+            Recent Registrations
+        </h2>
+
+
+        {% if registrations %}
+
+        <table>
+
+            <thead>
+
+                <tr>
+
+                    <th>ID</th>
+
+                    <th>Name</th>
+
+                    <th>Email</th>
+
+                    <th>Department</th>
+
+                    <th>Event</th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody>
+
+                {% for registration in registrations %}
+
+                <tr>
+
+                    <td>
+                        {{ registration["id"] }}
+                    </td>
+
+                    <td>
+                        {{ registration["name"] }}
+                    </td>
+
+                    <td>
+                        {{ registration["email"] }}
+                    </td>
+
+                    <td>
+                        {{ registration["department"] }}
+                    </td>
+
+                    <td>
+                        {{ registration["event"] }}
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+        {% else %}
+
+        <div class="empty-state">
+
+            <h3>
+                No registrations yet
+            </h3>
+
+            <p>
+                Student registrations will appear here.
+            </p>
+
+        </div>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
 
 <footer>
-    <p>College Event Management System</p>
+
+    <p>
+        © 2026 College Event Management System
+    </p>
+
 </footer>
 
 </body>
+
 </html>
